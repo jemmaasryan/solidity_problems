@@ -3,7 +3,6 @@
 pragma solidity 0.8.15;
 
 contract ArraySort {
-    
     function sorting(uint[] memory array, uint number) public returns(uint[] memory) {
         uint length = array.length;
         uint leftItem = array[0];
