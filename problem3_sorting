@@ -7,7 +7,7 @@ contract ArraySort {
         uint length = array.length;
         uint leftItem = array[0];
         uint rightItem = array[length - 1];
-        uint n = 8;
+        uint n = number;
         //number = msg.sender;
         array = quickSort(array, leftItem, rightItem);
         uint[] storage newArray;
