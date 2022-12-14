@@ -1,3 +1,52 @@
 //SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.15;
+
+contract Problem1StoreDatabase {
+    struct Person {
+        string name;
+        string surname;
+        Product[] products;
+    }
+    struct Product {
+        string productName;
+        uint count;
+    }
+    mapping(address => Person) public database;
+    mapping(address => bool) registered;
+
+    /* Helper function to check if the item is already in the database
+    */
+    function isBought(Product[] memory _products, Product memory _product) internal returns(bool, uint) {
+        for(uint i = 0; i < _products.length; i++) {
+            if(keccak256(abi.encodePacked(_products[i].productName)) == keccak256(abi.encodePacked(_product.productName))) {
+                return(true, i);
+            }
+        }
+        return(false,0);
+    }
+    /* Function to get infromation about address's name and surname
+    */
+    function getInfo(string memory _name, string memory _surname) public {
+        Person memory person;
+        database[msg.sender].name = _name;
+        database[msg.sender].surname = _surname;
+        require(registered[msg.sender] = true, "You're already in our system. Please insert your products."); 
+    }
+    /* Function to get products
+     * if the product is already in the database, it will just increment the count for the product
+    */
+    function getProducts(Product[] memory _products) public returns(Product[] memory) {
+        for(uint i = 0; i < _products.length; i++) {
+            uint j;
+            bool bought;
+            (bought, j) = isBought(database[msg.sender].products, _products[i]);
+            if(bought) {
+                database[msg.sender].products[j].count += _products[i].count;
+            } else {
+                database[msg.sender].products.push(_products[i]);
+            }
+        }
+        return database[msg.sender].products;        
+    }
+}
