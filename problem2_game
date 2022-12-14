@@ -9,7 +9,7 @@ contract Problem2Game {
     /* Function that generates random number from 0 to 2**256-1
     */
     function getRandom() internal returns(uint) {
-        random = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, random))) % (10);
+        random = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, random))) % (2**256-1);
         return uint(random);
     }
     /* Function that checks if the given number is +- 5 distance from random and vice versa.
