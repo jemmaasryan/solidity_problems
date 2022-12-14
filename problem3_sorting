@@ -16,7 +16,7 @@ contract Problem3Sorting {
             }
         }
         for(uint i = 1; i <= number; i++) {
-            array.push(_array[_array.length - 1]);
+            array.push(_array[_array.length - i]);
         }
     }
 }
