@@ -2,29 +2,31 @@
 
 pragma solidity 0.8.15;
 
-contract Game {
+contract Problem2Game {
     string success = "Congratulations, you won!";
     string failure = "Thank you for playing!";
     uint public random;
-
-    function getRandom(uint _random) internal returns(uint) {
-        random = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, random))) % _random;
+    /* Function that generates random number from 0 to 2**256-1
+    */
+    function getRandom() internal returns(uint) {
+        random = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, random))) % (2**256-1);
         return uint(random);
     }
-
+    /* Function that checks if the given number is +- 5 distance from random and vice versa.
+    */
     function insertNumber(uint _number) public returns(string memory) {
-        random = getRandom(2**256 - 1);
+        random = getRandom();
         if(_number < random) {
-            if((random - _number) == uint(5) || (random + uint(5)) == _number) {
-                return success;
+            if((random - _number) <= uint(5) || (random + uint(5)) <= _number) {
+            return success;
             } else {
-                return failure;
+            return failure;
             }
         } else {
-            if((_number - random) == uint(5) || (random + uint(5)) == _number) {
-                return success;
+            if((_number - random) <= uint(5) || (random + uint(5)) <= _number) {
+            return success;
             } else {
-                return failure;
+            return failure;
             }
         }
     }
