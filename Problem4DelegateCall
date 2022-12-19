@@ -38,7 +38,7 @@ interface IProblem4BUSD {
     function proposeOwner(address _proposedOwner) external;
 }
 
-contract Problem4DelegateCall {
+contract Problem4BUSD {
     address public busdAddress = 0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee;
 
     function getBalanceOf() external view returns(uint256) {
@@ -50,7 +50,7 @@ contract Problem4DelegateCall {
     }
 
     function getNextSeqOf(address target) external view returns(uint256){
-        return IProblem4BUSD(busdAddress).nextSeqOf(msg.sender);
+        return IProblem4BUSD(busdAddress).nextSeqOf(target);
     }
 
     function doTransfer(address _to, uint256 _value) external returns(bool){
