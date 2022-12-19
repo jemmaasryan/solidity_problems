@@ -1,0 +1,63 @@
+//SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.15;
+
+interface IProblem4BUSD {
+    /**
+    * @dev Gets the balance of the specified address.
+    * @param _addr The address to query the the balance of.
+    * @return An uint256 representing the amount owned by the passed address.
+    */
+    function balanceOf(address _addr) external view returns(uint256);
+    /**
+    * @dev Function to check the amount of tokens that an owner allowed to a spender.
+    * @param _owner address The address which owns the funds.
+    * @param _spender address The address which will spend the funds.
+    * @return A uint256 specifying the amount of tokens still available for the spender.
+    */
+    function allowance(address _owner, address _spender) external view returns(uint256);
+    /**
+    * @dev returns the next seq for a target address.
+    * The transactor must submit nextSeqOf(transactor) in the next transaction for it to be valid.
+    * Note: that the seq context is specific to this smart contract.
+    * @param target The target address.
+    * @return the seq.
+    */
+    function nextSeqOf(address target) external view returns(uint256);
+    /**
+    * @dev Transfer token to a specified address from msg.sender
+    * Note: the use of Safemath ensures that _value is nonnegative.
+    * @param _to The address to transfer to.
+    * @param _value The amount to be transferred.
+    */
+    function transfer(address _to, uint256 _value) external returns(bool);
+    /**
+    * @dev Allows the current owner to begin transferring control of the contract to a proposedOwner
+    * @param _proposedOwner The address to transfer ownership to.
+    */
+    function proposeOwner(address _proposedOwner) external;
+}
+
+contract Problem4DelegateCall {
+    address public busdAddress = 0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee;
+
+    function getBalanceOf() external view returns(uint256) {
+        return IProblem4BUSD(busdAddress).balanceOf(msg.sender);
+    }
+
+    function getAllowance(address _owner, address _spender) external view returns(uint256){
+        return IProblem4BUSD(busdAddress).allowance(_owner, _spender);
+    }
+
+    function getNextSeqOf(address target) external view returns(uint256){
+        return IProblem4BUSD(busdAddress).nextSeqOf(msg.sender);
+    }
+
+    function doTransfer(address _to, uint256 _value) external returns(bool){
+        return IProblem4BUSD(busdAddress).transfer(_to, _value);
+    }
+
+    function setProposeOwner(address _proposedOwner) external {
+        return IProblem4BUSD(busdAddress).proposeOwner(_proposedOwner);
+    }
+}
