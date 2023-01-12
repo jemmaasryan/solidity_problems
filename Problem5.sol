@@ -19,7 +19,7 @@ contract Problem5 {
     
     mapping(address => uint) public shareholder;
     mapping(address => Shareholder) public system;
-
+    Shareholder[] public all;
     constructor() {
         owner = payable(msg.sender);
     }
@@ -32,14 +32,16 @@ contract Problem5 {
     function addShareholder(address _shareholder, uint _percentage) external onlyOwner {
         system[msg.sender].personAddress = _shareholder;
         system[msg.sender].percentage = _percentage;
+        shareholder[_shareholder] = _percentage;
+        all.push(Shareholder(_shareholder, _percentage));
     }
 
     function removeShareholder(address _shareholder) external onlyOwner {
-        system[msg.sender].personAddress = address(0);
+        delete system[msg.sender].personAddress;
         system[msg.sender].percentage = 0;
     }
 
     receive() external payable {
-        shareholder[msg.sender] = msg.value;
+        
     }
 }
