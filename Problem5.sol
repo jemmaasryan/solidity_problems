@@ -40,6 +40,6 @@ contract Problem5 {
     }
 
     receive() external payable {
-
+        shareholder[msg.sender] = msg.value;
     }
 }
