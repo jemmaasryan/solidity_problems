@@ -30,13 +30,15 @@ contract Problem5 {
     }
 
     function addShareholder(address _shareholder, uint _percentage) external onlyOwner {
+        require(system[_shareholder].exists, "Already in system.");
         system[msg.sender].personAddress = _shareholder;
         system[msg.sender].percentage = _percentage;
         shareholder[_shareholder] = _percentage;
-        all.push(Shareholder(_shareholder, _percentage));
+        all.push(Shareholder(_shareholder, _percentage, false));
     }
 
     function removeShareholder(address _shareholder) external onlyOwner {
+        require(system[_shareholder].exists, "Address not found.");
         delete system[msg.sender].personAddress;
         system[msg.sender].percentage = 0;
     }
