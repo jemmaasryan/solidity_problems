@@ -35,8 +35,8 @@ contract Problem5 {
     }
 
     function removeShareholder(address _shareholder) external onlyOwner {
-        system[_shareholder].personAddress = address(0);
-        system[_shareholder].percentage = 0;
+        system[msg.sender].personAddress = address(0);
+        system[msg.sender].percentage = 0;
     }
 
     receive() external payable {
