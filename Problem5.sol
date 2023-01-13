@@ -1,58 +1,59 @@
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.15;
-/*Ստեղծել կոնտրակտ, որը constructor-ի միջոցով կարժեքավորի address տիպի
-  owner փոփոխականը հետագայում onlyOwner modifier-ը օգտագործելու համար։ 
-  Owner-ը որևիցե ֆունկցիայի միջոցով հնարավորություն պիտի ունենա ավելացնել բաժնետերերի
-  այսինքն՝ address և percentage յուրաքանչյուրի համար (ավելացնել նաև բաժնետեր 
-  հեռացնելու հնարավորությունը)։ Contract-ը հնարավորություն պիտի ունենա իր մեջ 
-  գումար պահելու (receive) և ամեն անգամ երբ որոշակի գումար կփոխանցվի contract-ի 
-  հասցեին, contract-ը կուղարկի այն բաժնետերերին իրենց տոկոսներին համապատասխան։  
-*/
+/** @title Adds and removes shareholders*/
 contract Problem5 {
-    address payable public owner;
-   
-    struct Shareholder {
-        address personAddress;
-        uint percentage;
-        bool exists;
-    }
-    mapping(address => uint) public shareholder;
-    mapping(address => Shareholder) public system;
-    Shareholder[] public all;
+    address public owner;
+    /** Mapping to connect shareholder to its percent.*/
+    mapping(address => uint8) public shareholder;
+    /** An array of all shareholders. */
+    address[] public allShareholders;
+    /* A variable to count total shares of all shareholders. */
+    uint8 totalShares;
 
     constructor() {
         owner = payable(msg.sender);
     }
-
+    /** Modifier that gives access to owner.
+    */
     modifier onlyOwner() {
         require(msg.sender == owner, "You are not allowed.");
         _;
     }
-
-    function addShareholder(address _shareholder, uint _percentage) external onlyOwner {
-        require(!system[_shareholder].exists, "Already in system.");
-        system[msg.sender].personAddress = _shareholder;
-        system[msg.sender].percentage = _percentage;
+    /** @dev Adds a shareholder.
+      * @param _shareholder The address of a shareholder to be added.
+      * @param _percentage The percent of that address.
+      */
+    function addShareholder(address _shareholder, uint8 _percentage) external onlyOwner {
+        require(shareholder[_shareholder] == 0, "Already in system.");
+        require(_percentage > 0 && _percentage <= 100, "");
+        totalShares += _percentage;
         shareholder[_shareholder] = _percentage;
-        all.push(Shareholder(_shareholder, _percentage, true));
+        allShareholders.push(_shareholder);
     }
-
+    /** @dev Removes a shareholder.
+      * @param _shareholder The address of a shareholder to be removed.
+      */
     function removeShareholder(address _shareholder) external onlyOwner {
-        require(system[_shareholder].exists, "Address not found.");
-        delete system[msg.sender].personAddress;
-        system[msg.sender].percentage = 0;
-    }
-    function shares(uint256 amount) external payable {
-        uint256 total = 0;
-        for(uint256 i = 0; i < all.length; i++) {
-            if(all[i].exists) {
-                total += all[i].percentage;
-                uint256 share = (amount * all[i].percentage) / total;
+        require(shareholder[_shareholder] > 0, "Address not found.");
+        totalShares -= shareholder[_shareholder];
+        delete shareholder[_shareholder];
+        for(uint i; i < allShareholders.length; i++){
+            if(allShareholders[i] == _shareholder){
+                allShareholders[i] = allShareholders[allShareholders.length-1];
+                allShareholders.pop;
             }
         }
     }
+    /** @dev Distributes funds to all shareholders by their percent.
+      */
+    function shares() internal {
+        for(uint256 i = 0; i < allShareholders.length; i++) {
+            uint share = (address(this).balance * shareholder[allShareholders[i]]) / 100;
+            payable(allShareholders[i]).transfer(share);
+        }
+    }
     receive() external payable {
-
+        shares();
     }
 }
