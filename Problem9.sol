@@ -8,7 +8,7 @@ interface Shareholder {
 contract Problem9 {
     address public owner;
     uint256 totalVotes;
-    uint256 end = block.timestamp + 28800;
+    uint256 end = block.timestamp + 8 hours;
     /** A mapping to connect candidate's address to their vote count.*/
     mapping(address => uint) public candidatesVoteCount;
     /** A mapping to connect voter's address to boolean value, 
